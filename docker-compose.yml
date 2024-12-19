@@ -1,0 +1,79 @@
+services:
+    database:
+        image: mariadb:10.11
+        environment:
+            MARIADB_DATABASE: app
+            MARIADB_ROOT_PASSWORD: password
+            MARIADB_AUTO_UPGRADE: 'yes'
+            MARIADB_DISABLE_UPGRADE_BACKUP: 'yes'
+        volumes:
+            - database:/var/lib/mysql:rw
+            - ./.docker/database/plugins/libudf_uuid.so:/usr/lib/mysql/plugin/libudf_uuid.so
+            - ./.docker/database/init:/docker-entrypoint-initdb.d
+        ports:
+            - "3306:3306"
+        networks:
+            - cakephp-net
+
+#    nginx:
+#        image: nginx:alpine
+#        volumes:
+#            - ./backend/public:/var/www/html/public:delegated
+#            - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+#            - ./.docker/nginx/sites/:/etc/nginx/sites-available
+#        depends_on:
+#            - php
+#        ports:
+#            - "80:80"
+#        networks:
+#            cakephp-net:
+#                aliases:
+#                    - cake.fbi.com
+#
+#    php:
+#        image: thecodingmachine/php:8.1-v4-fpm
+#        volumes:
+#            - ./backend:/var/www/html/:delegated
+#            - phpcache:/var/www/html/var
+#            - ./backend/var/coverage:/opt/phpstorm-coverage
+#        depends_on:
+#            - database
+#        environment:
+#            PHP_EXTENSION_XDEBUG: 1
+#            PHP_EXTENSION_EXCIMER: 1
+#            PHP_EXTENSION_AMQP: 1
+#            PHP_EXTENSION_BCMATH: 1
+#            PHP_EXTENSION_IMAGICK: 1
+#            PHP_EXTENSION_INTL: 1
+#            PHP_EXTENSION_GD: 1
+#            PHP_EXTENSION_PCOV: 1
+#            PHP_INI_ERROR_REPORTING: E_ALL
+#            PHP_INI_MEMORY_LIMIT: 512m
+#            PHP_INI_MAX_EXECUTION_TIME: 60
+#            PHP_INI_UPLOAD_MAX_FILESIZE: 500m
+#            PHP_INI_POST_MAX_SIZE: 500m
+#            PHP_INI_XDEBUG__LOG_LEVEL: 0
+#            PHP_INI_XDEBUG__START_WITH_REQUEST: yes
+#            PHP_IDE_CONFIG: "serverName=cake.fbi.com"
+#        networks:
+#            - cakephp-net
+#        expose:
+#            - '9000'
+#            - '9003'
+
+    adminer:
+        image: adminer
+        environment:
+            ADMINER_DEFAULT_SERVER: database
+        ports:
+            - "8888:8080"
+        networks:
+            - cakephp-net
+
+volumes:
+    database:
+    phpcache:
+
+networks:
+    cakephp-net:
+        driver: bridge
