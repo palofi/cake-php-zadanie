@@ -1,10 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
 class ProductListingController extends AppController
 {
-    public function index($id = null)
+    /**
+     * @param ?string $id
+     * @return void
+     */
+    public function index(?string $id = null): void
     {
         // Load the Products table
         $productsTable = $this->fetchTable('Products');
@@ -30,5 +35,4 @@ class ProductListingController extends AppController
         // Set variables to be used in the view
         $this->set(compact('products', 'categories'));
     }
-
 }

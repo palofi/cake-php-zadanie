@@ -153,7 +153,7 @@ class Installer
         };
 
         $walker = function (string $dir) use (&$walker, $changePerms): void {
-            /** @phpstan-ignore-next-line */
+            /** @phpstan-ignore argument.type */
             $files = array_diff(scandir($dir), ['.', '..']);
             foreach ($files as $file) {
                 $path = $dir . '/' . $file;
@@ -199,7 +199,7 @@ class Installer
         $config = $dir . '/config/' . $file;
         $content = file_get_contents($config);
 
-        /** @phpstan-ignore-next-line */
+        /** @phpstan-ignore argument.type */
         $content = str_replace('__SALT__', $newKey, $content, $count);
 
         if ($count == 0) {
@@ -230,7 +230,7 @@ class Installer
     {
         $config = $dir . '/config/' . $file;
         $content = file_get_contents($config);
-        /** @phpstan-ignore-next-line */
+        /** @phpstan-ignore argument.type */
         $content = str_replace('__APP_NAME__', $appName, $content, $count);
 
         if ($count == 0) {

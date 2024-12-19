@@ -1,26 +1,32 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Model\Entity\CartItem;
-use App\Model\Entity\Product;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Http\Response;
 use Cake\View\JsonView;
+use Exception;
 use Riesenia\Cart\Cart;
 use Riesenia\Cart\CartItemInterface;
 
 class CartController extends AppController
 {
+    /**
+     * @return array<string>
+     */
     public function viewClasses(): array
     {
         return [JsonView::class];
     }
 
-
-    public function index()
+    /**
+     * @return void
+     */
+    public function index(): void
     {
         $session = $this->request->getSession();
-        /** @var Cart $cart */
+        /** @var \Riesenia\Cart\Cart $cart */
         $cart = $session->read('Cart');
 
         $cartItems = [];
@@ -34,23 +40,25 @@ class CartController extends AppController
                         'name' => $item->getCartName(),
                         'quantity' => $item->getCartQuantity(),
                         'unit_price' => $item->getUnitPrice(),
-                        'total_price' => ($item->getUnitPrice() * $item->getCartQuantity()),
+                        'total_price' => $item->getUnitPrice() * $item->getCartQuantity(),
                         'tax_rate' => $item->getTaxRate(),
-                        'tax_total' => ($item->getUnitPrice() * $item->getCartQuantity()) * ($item->getTaxRate() / 100),
+                        'tax_total' => $item->getUnitPrice() * $item->getCartQuantity() * $item->getTaxRate() / 100,
                     ];
-                    $cartTotal += ($item->getUnitPrice() * $item->getCartQuantity()) + ($item->getUnitPrice() * $item->getCartQuantity()) * ($item->getTaxRate() / 100);
+                    $cartTotal += ($item->getUnitPrice() * $item->getCartQuantity())
+                        + ($item->getUnitPrice() * $item->getCartQuantity()) * $item->getTaxRate() / 100;
                 }
             }
         }
-
-//        $cartTotal = $cart->getTotal();
 
         $this->set(compact('cartTotal'));
         $this->set(compact('cartItems'));
     }
 
-
-    public function addToCart($id = null)
+    /**
+     * @param string|null $id
+     * @return \App\Controller\Response|null
+     */
+    public function addToCart(?string $id = null)
     {
         if ($id === null) {
             $this->Flash->error(__('Invalid product selection.'));
@@ -69,7 +77,7 @@ class CartController extends AppController
         $productsTable = $this->fetchTable('Products');
 
         try {
-            /** @var Product $product */
+            /** @var \App\Model\Entity\Product $product */
             $product = $productsTable->get($id);
         } catch (RecordNotFoundException $e) {
             $this->Flash->error(__('Product not found.'));
@@ -86,8 +94,11 @@ class CartController extends AppController
         return $this->redirect(['controller' => 'ProductListing', 'action' => 'index']);
     }
 
-
-    public function removeFromCart($itemId = null)
+    /**
+     * @param string|null $itemId
+     * @return \Cake\Http\Response|null
+     */
+    public function removeFromCart(?string $itemId = null): ?Response
     {
         if ($itemId === null) {
             $this->Flash->error(__('Invalid item selected for removal.'));
@@ -108,15 +119,18 @@ class CartController extends AppController
             $cart->removeItem($itemId);
             $session->write('Cart', $cart);
             $this->Flash->success(__('The item has been removed from your cart.'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->Flash->error(__('An error occurred while removing the item: ') . $e->getMessage());
         }
 
         return $this->redirect(['action' => 'index']);
     }
 
-
-    public function updateQuantity($itemId = null)
+    /**
+     * @param string|null $itemId
+     * @return \Cake\Http\Response|null
+     */
+    public function updateQuantity(?string $itemId = null): ?Response
     {
         $this->request->allowMethod(['post']);
 
@@ -135,12 +149,13 @@ class CartController extends AppController
 
         // Retrieve the cart from the session
         $session = $this->request->getSession();
-        /** @var Cart $cart */
+        /** @var \Riesenia\Cart\Cart $cart */
         $cart = $session->read('Cart');
 
         // Check if the cart exists and contains the item
         if (!$cart || !$cart->hasItem($itemId)) {
             $this->Flash->error(__('Item not found in your cart.'));
+
             return $this->redirect(['action' => 'index']);
         }
 
@@ -149,7 +164,7 @@ class CartController extends AppController
         $session->write('Cart', $cart);
 
         $this->Flash->success(__('The item quantity has been updated.'));
+
         return $this->redirect(['action' => 'index']);
     }
-
 }

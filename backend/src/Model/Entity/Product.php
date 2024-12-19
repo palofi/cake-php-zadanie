@@ -37,28 +37,37 @@ class Product extends Entity
         'categories' => true,
     ];
 
-
+    /**
+     * @return float
+     */
     public function getPrice(): float
     {
-        return ((int) $this->price) / 100;
+        return ((int)$this->price) / 100;
     }
 
-
+    /**
+     * @param float $price
+     * @return void
+     */
     public function setPrice(float $price): void
     {
-        $this->price = (int) ($price * 100);
+        $this->price = (int)($price * 100);
     }
 
-
+    /**
+     * @return float
+     */
     public function getVatRate(): float
     {
-        return ((int) $this->vat_rate) / 100;
+        return ((int)$this->vat_rate) / 100;
     }
 
-
+    /**
+     * @param string $vat_rate
+     * @return void
+     */
     public function setVatRate(string $vat_rate): void
     {
-        $this->vat_rate = (int) ($vat_rate * 100);
+        $this->vat_rate = (int)($vat_rate * 100);
     }
-
 }

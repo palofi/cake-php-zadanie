@@ -10,7 +10,6 @@ namespace App\Controller;
  */
 class ProductsController extends AppController
 {
-
     /**
      * Index method
      *
@@ -31,7 +30,7 @@ class ProductsController extends AppController
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view(?string $id = null)
     {
         $product = $this->Products->get($id, contain: ['Categories']);
         $this->set(compact('product'));
@@ -50,7 +49,7 @@ class ProductsController extends AppController
             $file = $this->request->getUploadedFiles();
 
             $product->image_path = $file['image_path']->getClientFilename();
-            $file['image_path']->moveTo(WWW_ROOT . 'img' . DS .  $product->image_path);
+            $file['image_path']->moveTo(WWW_ROOT . 'img' . DS . $product->image_path);
 
             if ($this->Products->save($product)) {
                 $this->Flash->success(__('The product has been saved.'));
@@ -70,7 +69,7 @@ class ProductsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit(?string $id = null)
     {
         $product = $this->Products->get($id, contain: ['Categories']);
         if ($this->request->is(['patch', 'post', 'put'])) {
@@ -93,7 +92,7 @@ class ProductsController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete(?string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
         $product = $this->Products->get($id);
@@ -105,5 +104,4 @@ class ProductsController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
-
 }

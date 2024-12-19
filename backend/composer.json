@@ -17,8 +17,11 @@
         "cakephp/bake": "^3.0.0",
         "cakephp/cakephp-codesniffer": "^5.0",
         "cakephp/debug_kit": "~5.0",
+        "friendsofphp/php-cs-fixer": "^3.65",
         "josegonzalez/dotenv": "^4.0",
-        "phpunit/phpunit": "^10.1.0"
+        "phpstan/phpstan": "^2.0",
+        "phpunit/phpunit": "^10.1.0",
+        "rshop/php-cs-fixer-config": "^3.0"
     },
     "suggest": {
         "markstory/asset_compress": "An asset compression plugin which provides file concatenation and a flexible filter system for preprocessing and minification.",
@@ -44,8 +47,8 @@
             "@cs-check",
             "@stan"
         ],
-        "cs-check": "phpcs --colors -p",
-        "cs-fix": "phpcbf --colors -p",
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
         "stan": "phpstan analyse",
         "test": "phpunit --colors=always"
     },

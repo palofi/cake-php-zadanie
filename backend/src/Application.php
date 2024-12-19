@@ -69,7 +69,6 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
          * Debug Kit should not be installed on a production system
          */
 
-
         // Load more plugins here
     }
 
@@ -133,12 +132,13 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
     {
         $this->addOptionalPlugin('Bake');
 
-
-
         // Load more plugins here
     }
 
-
+    /**
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @return \Authentication\AuthenticationServiceInterface
+     */
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
         $service = new AuthenticationService();
@@ -156,7 +156,7 @@ class Application extends BaseApplication implements AuthenticationServiceProvid
 
         $fields = [
             AbstractIdentifier::CREDENTIAL_USERNAME => 'username',
-            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password'
+            AbstractIdentifier::CREDENTIAL_PASSWORD => 'password',
         ];
         // Load the authenticators. Session should be first.
         $service->loadAuthenticator('Authentication.Session');
